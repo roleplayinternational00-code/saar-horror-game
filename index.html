@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Die Saar-Legende - 3D Horror Game</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Hauptmenü -->
+    <div id="mainMenu" class="menu-screen">
+        <div class="menu-content">
+            <h1 class="game-title">DIE SAAR-LEGENDE</h1>
+            <p class="subtitle">Eine Creepypasta</p>
+            <div class="menu-buttons">
+                <button id="newGameBtn" class="menu-btn">Neues Spiel</button>
+                <button id="loadGameBtn" class="menu-btn" disabled>Spiel Laden</button>
+                <button id="settingsBtn" class="menu-btn">Einstellungen</button>
+                <button id="controlsBtn" class="menu-btn">Steuerung</button>
+                <button id="creditsBtn" class="menu-btn">Credits</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Einstellungen -->
+    <div id="settingsMenu" class="menu-screen hidden">
+        <div class="menu-content">
+            <h2>Einstellungen</h2>
+            <div class="settings-group">
+                <label>Grafik-Qualität:</label>
+                <select id="graphicsQuality">
+                    <option value="low">Niedrig</option>
+                    <option value="medium" selected>Mittel</option>
+                    <option value="high">Hoch</option>
+                </select>
+            </div>
+            <div class="settings-group">
+                <label>Audio-Lautstärke:</label>
+                <input type="range" id="audioVolume" min="0" max="100" value="70">
+                <span id="volumeValue">70%</span>
+            </div>
+            <button id="backFromSettings" class="menu-btn">Zurück</button>
+        </div>
+    </div>
+
+    <!-- Steuerung -->
+    <div id="controlsMenu" class="menu-screen hidden">
+        <div class="menu-content">
+            <h2>Steuerung</h2>
+            <div class="controls-list">
+                <div class="control-item"><span>WASD</span><span>Bewegung</span></div>
+                <div class="control-item"><span>Maus</span><span>Umsehen</span></div>
+                <div class="control-item"><span>E</span><span>Interagieren</span></div>
+                <div class="control-item"><span>F</span><span>Taschenlampe an/aus</span></div>
+                <div class="control-item"><span>Shift</span><span>Rennen</span></div>
+                <div class="control-item"><span>Tab</span><span>Inventar</span></div>
+                <div class="control-item"><span>ESC</span><span>Pause</span></div>
+            </div>
+            <button id="backFromControls" class="menu-btn">Zurück</button>
+        </div>
+    </div>
+
+    <!-- Credits -->
+    <div id="creditsMenu" class="menu-screen hidden">
+        <div class="menu-content">
+            <h2>Credits</h2>
+            <p>Entwickelt mit Three.js und viel Kaffee ☕</p>
+            <p>Story & Design: Elite Horror Dev Team</p>
+            <p>Sound: Web Audio API</p>
+            <p>Inspiriert von Saar-Legenden</p>
+            <button id="backFromCredits" class="menu-btn">Zurück</button>
+        </div>
+    </div>
+
+    <!-- Game Canvas -->
+    <div id="gameContainer" class="hidden">
+        <canvas id="gameCanvas"></canvas>
+        
+        <!-- HUD -->
+        <div id="hud">
+            <div id="sanityBar" class="hud-bar">
+                <div class="bar-label">Verstand</div>
+                <div class="bar-container">
+                    <div id="sanityFill" class="bar-fill sanity-fill"></div>
+                </div>
+            </div>
+            
+            <div id="staminaBar" class="hud-bar hidden">
+                <div class="bar-label">Ausdauer</div>
+                <div class="bar-container">
+                    <div id="staminaFill" class="bar-fill stamina-fill"></div>
+                </div>
+            </div>
+            
+            <div id="batteryIndicator" class="hud-element">
+                <span>🔋</span>
+                <span id="batteryPercent">100%</span>
+            </div>
+            
+            <div id="interactionPrompt" class="hud-element hidden">
+                Drücke <span class="key">E</span> zum Interagieren
+            </div>
+            
+            <div id="objectiveText" class="hud-element">
+                Finde Marcus am alten Bootshaus
+            </div>
+        </div>
+
+        <!-- Inventar -->
+        <div id="inventoryScreen" class="overlay-screen hidden">
+            <div class="overlay-content">
+                <h2>Inventar</h2>
+                <div id="inventoryGrid" class="inventory-grid"></div>
+                <p class="hint">Drücke Tab zum Schließen</p>
+            </div>
+        </div>
+
+        <!-- Dokument-Leser -->
+        <div id="documentReader" class="overlay-screen hidden">
+            <div class="document-content">
+                <h3 id="documentTitle"></h3>
+                <div id="documentText"></div>
+                <button id="closeDocument" class="menu-btn">Schließen</button>
+            </div>
+        </div>
+
+        <!-- Pause-Menü -->
+        <div id="pauseMenu" class="overlay-screen hidden">
+            <div class="menu-content">
+                <h2>Pause</h2>
+                <div class="menu-buttons">
+                    <button id="resumeBtn" class="menu-btn">Fortsetzen</button>
+                    <button id="saveGameBtn" class="menu-btn">Spiel Speichern</button>
+                    <button id="pauseSettingsBtn" class="menu-btn">Einstellungen</button>
+                    <button id="quitBtn" class="menu-btn">Zum Hauptmenü</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="menu-screen hidden">
+        <div class="menu-content">
+            <h2>Lädt...</h2>
+            <div class="loading-bar">
+                <div id="loadingProgress"></div>
+            </div>
+            <p id="loadingTip" class="loading-tip">Tipp: Schalte deine Taschenlampe aus, wenn du dich versteckst...</p>
+        </div>
+    </div>
+
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r160/three.min.js"></script>
+    
+    <!-- Game Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/inventory.js"></script>
+    <script src="js/sanity.js"></script>
+    <script src="js/story.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/enemy.js"></script>
+    <script src="js/environment.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
